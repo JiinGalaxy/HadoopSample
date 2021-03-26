@@ -36,14 +36,6 @@ public class RecommendedFriend {
             return mutualFriend;
         }
 
-        public void setPotentialFriend(long potentialFriend) {
-            this.potentialFriend = potentialFriend;
-        }
-
-        public void setMutualFriend(long mutualFriend) {
-            this.mutualFriend = mutualFriend;
-        }
-
         @Override
         public void write(DataOutput dataOutput) throws IOException {
             dataOutput.writeLong( this.potentialFriend );
@@ -160,19 +152,16 @@ public class RecommendedFriend {
 
             // sort the recommended friends by mutual friend number(The size of the List)
             // if the Size is same use id to sort.
-            SortedMap<Long, List> sortedRecSet = new TreeMap( new Comparator<Long>() {
-                @Override
-                public int compare(Long k1, Long k2) {
-                    int f1 = recSet.get( k1 ).size();
-                    int f2 = recSet.get( k2 ).size();
-                    if (f1 < f2)
-                        return 1;
-                    else if (f1 == f2 && k1 < k2)
-                        return 1;
-                    else
-                        return -1;
-                }
-            });
+            SortedMap<Long, List> sortedRecSet = new TreeMap( (Comparator<Long>) (k1, k2) -> {
+                int f1 = recSet.get( k1 ).size();
+                int f2 = recSet.get( k2 ).size();
+                if (f1 > f2)
+                    return 1;
+                else if (f1 == f2 && k1 > k2)
+                    return 1;
+                else
+                    return -1;
+            } );
 
             for(Long key : recSet.keySet()){
                 if(recSet.get( key ) != null)
